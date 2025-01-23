@@ -1,0 +1,10 @@
+---
+const { match } = Astro.props;
+---
+
+<tr>
+  <td>{match.nameTeamA} vs {match.nameTeamB}</td>
+  <td>{match.setA} - {match.setB}</td>
+  <td>{match.state}</td>
+  <td><a href=`/match/${match.id}` class="btn-secondary">Ver Detalles</a></td>
+</tr>

@@ -1,0 +1,36 @@
+---
+const { tournaments } = Astro.props;
+---
+
+{
+  tournaments.map((tournament: any) => (
+    <div class="torneo-card">
+      <h3>{tournament.name}</h3>
+      <p>
+        Fecha:{" "}
+        {new Date(tournament.startDate).toLocaleDateString("es-ES", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })}
+      </p>
+      <img src="image.jpg" alt="tournament" />
+      <a href={`/tournament/${tournament.id}`} class="btn-secondary">
+        Ver Detalles
+      </a>
+    </div>
+  ))
+}
+
+<style>
+  .torneo-card {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  }
+  img {
+    width: 300px;
+    object-fit: contain;
+  }
+</style>

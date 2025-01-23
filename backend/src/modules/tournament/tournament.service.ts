@@ -40,6 +40,8 @@ export class TournamentService {
         description: t.description,
         type: t.type,
         status: t.status,
+        startDate: t.startDate,
+        endDate: t.endDate,
       }));
       return tournamentsDTO;
     } catch (error) {
@@ -149,10 +151,12 @@ export class TournamentService {
 
   async getGroups(idTournament: string): Promise<getTournamentGroupsDTO> {
     try {
+      console.log({ idTournament });
       const t: Tournament = await this.tournamentRepository.findOne({
         where: { id: idTournament },
         relations: ['groups', 'groups.teams'],
       });
+      console.log({ t });
       const groups: getTournamentGroupsDTO = {
         id: t.id,
         groups: t.groups

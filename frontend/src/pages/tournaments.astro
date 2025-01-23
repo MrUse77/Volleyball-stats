@@ -1,0 +1,53 @@
+---
+import Torneos from "../components/Torneos.astro";
+import Layout from "../layouts/Layout.astro";
+import { API_TOURNAMENTS_GET } from "astro:env/server";
+
+const fetchTournaments = async (): Promise<any | null> => {
+  try {
+    const response: Response = await fetch(API_TOURNAMENTS_GET);
+    const tournaments = await response.json();
+    return tournaments;
+  } catch (error: any) {
+    console.error(error);
+    return null;
+  }
+};
+const tournaments: any | null = await fetchTournaments();
+
+export const prerender = true;
+---
+
+<Layout title="Torneos">
+  <div class="container">
+    <h1>Torneos</h1>
+    <section>
+      <div class="torneos">
+        {
+          tournaments ? (
+            <Torneos server:defer tournaments={tournaments}>
+              <span slot="fallback" class="loading">
+                {" "}
+                Cargando torneos...{" "}
+              </span>
+            </Torneos>
+          ) : (
+            <p>No hay torneos disponibles</p>
+          )
+        }
+      </div>
+    </section>
+  </div>
+</Layout>
+<style is:global>
+  .container {
+    margin-top: 6rem;
+  }
+  h1 {
+    text-align: center;
+    margin: 1rem;
+  }
+  section {
+    min-height: 100vh;
+  }
+</style>

@@ -1,0 +1,123 @@
+<header id="header" class="header">
+  <a href="/">
+    <h1 class="logo">🏐 VoleyTrack</h1>
+  </a>
+  <nav class="main-nav">
+    <ul>
+      <li><a href="/">Inicio</a></li>
+      <li><a href="/tournaments">Torneos</a></li>
+      <li><a href="/matches">Partidos</a></li>
+      <li><a href="/top">Estadísticas</a></li>
+      <li><a href="/profile">Perfil</a></li>
+    </ul>
+  </nav>
+  <nav class="auth">
+    <a href="#" class="btn-login">Iniciar Sesión</a>
+    <a href="#" class="btn-register">Registrarse</a>
+  </nav>
+</header>
+<script>
+  window.addEventListener("scroll", () => {
+    const header = document.getElementById("header");
+    const maxScroll = 200; // Máximo desplazamiento antes de ser totalmente opaco
+    const opacity = Math.min(window.scrollY / maxScroll, 0.75);
+    if (header) {
+      header.style.backgroundColor = `rgba(0, 0, 0, ${1 - opacity})`;
+    }
+  });
+</script>
+<style>
+  ul {
+    gap: 1rem;
+  }
+  a {
+    text-decoration: none;
+  }
+  li {
+    width: 10rem;
+    height: 2rem;
+
+    a {
+      display: block;
+      height: 100%;
+      text-align: center;
+      line-height: 2rem;
+    }
+  }
+  li:hover {
+    border-radius: 2px;
+    transition: background-color 0.3s;
+    background-color: #282ca7;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .logo {
+    font-size: 2rem;
+    font-weight: bold;
+    width: 16rem;
+    text-align: center;
+    margin: 0;
+    color: white;
+  }
+  .main-nav {
+    display: flex;
+    justify-content: center;
+    flex-grow: 1;
+  }
+  .main-nav ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .main-nav a {
+    font-size: 1rem;
+  }
+  .auth {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+  }
+  .btn-login,
+  .btn-register {
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+  }
+  .btn-register {
+    background-color: #282ca7;
+    color: #fff;
+  }
+  .btn-login {
+    background-color: #ffc107;
+    color: #343a40;
+  }
+  .auth a:hover {
+    background-color: #343a40;
+    color: white;
+  }
+  .btn-primary {
+    background-color: #282ca7;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+  }
+  .btn-primary:hover {
+    background-color: #343a40;
+  }
+</style>

@@ -1,0 +1,65 @@
+---
+import Partidos from "../components/Partidos.astro";
+import Layout from "../layouts/Layout.astro";
+import { API_MATCHES_GET } from "astro:env/server";
+
+const fetchMatches = async (): Promise<any> => {
+  try {
+    const response: Response = await fetch(`${API_MATCHES_GET}`);
+    const matches = await response.json();
+    return matches;
+  } catch (error: any) {
+    console.error(error);
+    return null;
+  }
+};
+const matches: any[] = await fetchMatches();
+---
+
+<Layout title="Partidos">
+  <div class="container">
+    <h1>Partidos</h1>
+    <div>
+      <table>
+        <thead>
+          <tr>
+            <th>Equipos</th>
+            <th>Puntaje</th>
+            <th>Estado</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          {matches.map((match: any) => <Partidos match={match} />)}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</Layout>
+<style>
+  .container {
+    margin-top: 6rem;
+  }
+  h1 {
+    text-align: center;
+    margin: 1rem;
+  }
+  div {
+    min-height: 100vh;
+  }
+  table {
+    width: 90vw;
+    margin: auto;
+    border-radius: 10px; /* Ajusta el radio según tus necesidades */
+    overflow: hidden; /* Asegúrate de que el contenido no sobresalga */
+
+    th {
+      font-size: x-large;
+    }
+    tbody {
+      td {
+        height: 2rem;
+      }
+    }
+  }
+</style>

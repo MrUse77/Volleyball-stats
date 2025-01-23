@@ -1,0 +1,134 @@
+---
+import { API_MATCHES_GET } from "astro:env/server";
+import Layout from "../../layouts/Layout.astro";
+
+const { id } = Astro.params;
+const fetchStatistics = async () => {
+  const response = await fetch(`${API_MATCHES_GET}/${id}`);
+  return response.json();
+};
+const match = await fetchStatistics();
+
+
+const [teamA,teamB]= [match.scoreA, match.scoreB]
+console.log(Astro.request.headers.get('accept-language'))
+---
+
+<Layout
+  title={match ? `Partido del ${match.tournament}` : "Torneo no encontrado"}>
+  <div class="body-match">
+    <section class="result-section">
+			<h1 class="tournament-name">{match.tournament}</h1>
+			<p>  {new Date(match.startTime).toLocaleDateString(Astro.request.headers.get('accept-language') || "es-AR", {
+				minute: "numeric",
+				hour:"numeric",
+				day: "numeric",
+				month: "long",
+				year: "numeric",
+			})}</p>
+      <div class="match">
+				<div class="team-home">
+					<h1>{match.teamA.name}</h1>
+				</div>
+				<div class="sets">
+					<h1>{match.setA}</h1>
+					<h1>:</h1>
+					<h1>{match.setB}</h1>
+				</div>
+				<div class="team-away">
+					<h1>{match.teamB.name}</h1>
+				</div>
+      </div>
+			<div class="scores">
+				{
+					teamA.map((scoreA:string,index:number) => (
+						console.log(scoreA),
+						<div class="score">
+							<p>{scoreA}</p>
+						</div>
+						<p>-</p>
+						<div class="score">
+							<p>{teamB[index]}</p>
+						</div>
+					))
+				}
+			</div>
+    </section>
+  </div>
+</Layout>
+<style>
+	.tournament-name{
+		font-size: 3rem;
+		margin: 0;
+	}
+  .body-match {
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(123, 198, 252);
+    min-height: 100vh;
+		color:white;
+  }
+  .result-section {
+		display: flex;
+    flex-direction:column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    padding: 3rem;
+		background-image: radial-gradient(circle, #756e69, #292727);s
+  }
+  .sets {
+    display: flex;
+    border-radius: 5px;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    h1 {
+      margin: 0;
+      padding: 1rem;
+    }
+  }
+  h1 {
+    font-size: 2rem;
+  }
+  p {
+    font-size: 1.5rem;
+  }
+  .match {
+    border-radius: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+
+
+    h1 {
+      margin: 1rem;
+    }
+    div {
+
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      border-bottom-left-radius: 5px;
+      border-bottom-right-radius: 5px;
+      p {
+        width: 5rem;
+        text-align: center;
+        background-color: black;
+        color: white;
+      }
+    }
+  }
+	.scores{
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+		gap: 1rem;
+	}
+</style>

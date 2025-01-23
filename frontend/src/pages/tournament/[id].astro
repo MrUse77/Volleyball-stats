@@ -1,0 +1,221 @@
+---
+import { API_TOURNAMENTS_GET } from "astro:env/server";
+import BodyOptions from "../../components/tournament/BodyOptions";
+
+import Layout from "../../layouts/Layout.astro";
+interface Tournament {
+  id: string;
+  name: string;
+  description: string;
+  type: string;
+  status: string;
+  startDate: Date;
+  endDate: Date;
+}
+
+const { id } = Astro.params;
+const fetchTournament = async (
+  idT: string | undefined
+): Promise<Tournament | null> => {
+  try {
+    console.log({ idT1: idT });
+    const response: Response = await fetch(`${API_TOURNAMENTS_GET}/${idT}`);
+    const t = await response.json();
+    return t;
+  } catch (error: any) {
+    console.error(error);
+    return null;
+  }
+};
+
+export const prerender = false;
+const tournament: Tournament | null = await fetchTournament(id);
+
+---
+
+<Layout title={tournament? tournament.name:'Torneo no encontrado'}>
+{
+  tournament ? (
+      <section class="header-tournament">
+        <a href="/" class="btn-secondary">
+          Volver
+        </a>
+        <h1>{tournament.name}</h1>
+      </section>
+      <section class="tournament-details">
+        <div class="date">
+          <h2>Fecha:</h2>
+          <p>
+            {new Date(tournament.startDate).toLocaleDateString("es-ES", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            })}
+          </p>
+        </div>
+        <div class="status">
+          <h2>Estado del torneo:</h2>
+          <span class={` ${tournament.status}`}>{tournament.status}</span>
+        </div>
+        <p>{tournament.description}</p>
+      </section>
+      <section class="groups-section">
+        <BodyOptions client:load tournament={tournament}  />
+      </section>
+  ) : (
+
+      <section class="groups-section">
+        <a href="/" class="btn-secondary">
+          Volver
+        </a>
+        <h1>Torneo no encontrado</h1>
+      </section>
+
+  )
+}
+	</Layout>
+
+<style is:global>
+  .body-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+  }
+  .group-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: #fff;
+    border-radius: 5px;
+    border: 1px solid #000000;
+    text-align: center;
+    .btn-secondary {
+      margin: 0.5rem;
+    }
+  }
+
+  .group-card h3 {
+    margin: 0.5rem;
+  }
+  .btn-secondary {
+    background-color: #007bff;
+    color: #fff;
+    padding: 0.5rem 1rem 0.5rem 1rem;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s;
+  }
+  .btn-secondary:hover {
+    background-color: #0056b3;
+  }
+
+  h1,
+  h2 {
+    margin: 0;
+    text-align: center;
+  }
+
+  .groups-section {
+    min-height: 100vh;
+  }
+
+  .header-tournament {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 1rem;
+  }
+  .header-tournament h1 {
+    flex-grow: 1;
+    text-align: center;
+    padding-right: 5rem;
+  }
+  .tournament-details {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    padding: 0 1rem;
+    gap: 1rem;
+    align-items: start;
+    .status {
+      display: flex;
+      align-items: center;
+      font-weight: bold;
+      gap: 1rem;
+      .active {
+        color: #fff;
+        background-color: #28a745;
+        padding: 0.25rem 0.75rem;
+        border-radius: 5px;
+      }
+      .inactive {
+        background-color: #dc3545;
+        color: #fff;
+        padding: 0.25rem 0.75rem;
+        border-radius: 5px;
+      }
+    }
+    .date {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      h2 {
+        margin: 0;
+      }
+    }
+    p {
+      font-weight: bold;
+      font-size: 1.25rem;
+    }
+  }
+  .header-options {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 1rem;
+    margin-bottom: 0;
+    button {
+      border-top: 1px solid #000000;
+      border-left: 1px solid #000000;
+      border-right: 1px solid #000000;
+      border-bottom: none;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      border-radius: 2px;
+      width: 50%;
+      padding: 0;
+
+      h2 {
+        width: 100%;
+      }
+      h2:hover {
+        cursor: pointer;
+        background-color: rgba(48, 28, 3, 0.229);
+      }
+    }
+  }
+  .active {
+    background-color: #007bff;
+  }
+  .body-options {
+    margin: 0 1rem 0 1rem;
+    background-color: rgb(28, 83, 160);
+  }
+	tbody,
+  thead {
+    text-align: center;
+  }
+	table{
+		.partidos{
+			display: grid;
+			grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+			gap: 1rem;
+			padding: 1rem;
+			width: 100%;
+		}
+	}
+	td{
+		background-color: rgb(28, 83, 160);
+	}
+</style>

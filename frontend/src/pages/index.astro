@@ -1,0 +1,66 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Hero from "../components/Hero.astro";
+import Torneos from "../components/Torneos.astro";
+import Partidos from "../components/Partidos.astro";
+import { API_TOURNAMENTS_GET } from "astro:env/server";
+const t: [] = await fetch(API_TOURNAMENTS_GET)
+  .then((response) => response.json())
+  .catch((error) => console.error(error));
+const tournaments = t.filter(
+  (tournament: any) => tournament.status === "active"
+);
+console.log(tournaments);
+export const prerender = true;
+---
+
+<Layout title="VoleyStats">
+  <Hero />
+  <section class="torneos-section">
+    <h2>Torneos Activos</h2>
+    <div class="torneos">
+      {
+        tournaments ? (
+          <Torneos server:defer tournaments={tournaments}>
+            <span slot="fallback" class="loading">
+              {" "}
+              Cargando torneos...
+            </span>
+          </Torneos>
+        ) : (
+          <p>No hay torneos disponibles</p>
+        )
+      }
+    </div>
+  </section>
+  <section class="partidos-seccion">
+    <div class="tabla-partidos">
+      <h2>Partidos en Vivo</h2>
+      <p>Proximamente...</p>
+    </div>
+  </section>
+</Layout>
+<style>
+  /* Partidos Section */
+  .partidos-seccion {
+    padding: 2rem 0;
+    background-color: #f8f9fa;
+  }
+  p {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-top: 2rem;
+  }
+  .partidos-seccion h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .tabla-partidos {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    margin: auto;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    max-width: 1200px;
+  }
+</style>

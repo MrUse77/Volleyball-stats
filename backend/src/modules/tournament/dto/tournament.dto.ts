@@ -64,6 +64,8 @@ export class getAllTournamentsDTO {
   description: string;
   type: string;
   status: string;
+  startDate: Date;
+  endDate: Date;
 }
 
 export class getTournamentDTO {
