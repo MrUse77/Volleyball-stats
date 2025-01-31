@@ -27,14 +27,28 @@ const fetchTournament = async (
     return null;
   }
 };
+const fetchMatches = async (): Promise<any> => {
+	try {
+		const response: Response = await fetch(`${API_TOURNAMENTS_GET}/${id}/matches`);
+		const matches = await response.json();
+		console.dir(matches, { depth: null });
 
+		return matches;
+	} catch (error: any) {
+		console.error(error);
+		return null;
+	}
+};
 export const prerender = false;
+const matches = await fetchMatches();
 const tournament: Tournament | null = await fetchTournament(id);
 
 ---
 
 <Layout title={tournament? tournament.name:'Torneo no encontrado'}>
+	<div class="container">
 {
+
   tournament ? (
       <section class="header-tournament">
         <a href="/" class="btn-secondary">
@@ -47,7 +61,7 @@ const tournament: Tournament | null = await fetchTournament(id);
           <h2>Fecha:</h2>
           <p>
             {new Date(tournament.startDate).toLocaleDateString("es-ES", {
-              day: "numeric",
+							day: "numeric",
               month: "long",
               year: "numeric",
             })}
@@ -60,7 +74,7 @@ const tournament: Tournament | null = await fetchTournament(id);
         <p>{tournament.description}</p>
       </section>
       <section class="groups-section">
-        <BodyOptions client:load tournament={tournament}  />
+        <BodyOptions client:load tournament={tournament} matches={matches}  />
       </section>
   ) : (
 
@@ -73,11 +87,12 @@ const tournament: Tournament | null = await fetchTournament(id);
 
   )
 }
+</div>
 	</Layout>
 
 <style is:global>
   .body-grid {
-    display: grid;
+		display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 1rem;
     padding: 1rem;

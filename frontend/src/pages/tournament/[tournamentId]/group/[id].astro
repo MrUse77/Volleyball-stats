@@ -1,0 +1,127 @@
+---
+import Layout from "../../../../layouts/Layout.astro";
+const { id } = Astro.params;
+const { tournamentId } = Astro.params;
+const fetchGroup = async () => {
+  try {
+    const res = await fetch(`http://localhost:3000/groups/${id}`);
+    const data = await res.json();
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const group = await fetchGroup();
+//ordenar equipos por puntos
+group.teams.sort((a:any, b:any) => {
+	if (a.statistics.puntos > b.statistics.puntos) {
+		return -1;
+	}
+	if (a.statistics.puntos < b.statistics.puntos) {
+		return 1;
+	}
+	return 0;
+});
+console.dir(group, { depth: null });
+export const prerender = false;
+---
+
+<Layout title="Group">
+  <div class="container">
+    {
+      group ? (
+        <section class="title">
+          <h1>{group.tournament}</h1>
+          <h2>Grupo {group.group}</h2>
+        </section>
+				<section class="table">
+          <h1>Equipos</h1>
+					<table>
+						<thead>
+							<tr>
+								<th>Equipo</th>
+								<th>Pts</th>
+								<th>PJ</th>
+								<th>PG</th>
+								<th>PP</th>
+								<th>SG</th>
+								<th>SP</th>
+
+							</tr>
+						</thead>
+						<tbody>
+							{
+								group.teams.map((team:any) => (
+									<tr>
+										<td>{team.name}</td>
+										<td>{team.statistics.puntos}</td>
+										<td>{team.statistics.pj}</td>
+										<td>{team.statistics.pg}</td>
+										<td>{team.statistics.pp}</td>
+										<td>{team.statistics.setsGanados}</td>
+										<td>{team.statistics.setsPerdidos}</td>
+								
+									</tr>
+								))
+							}
+						</tbody>
+					</table>
+				</section>
+      ) : (
+        <h1>Group not found</h1>
+      )
+    }
+  </div>
+</Layout>
+<style>
+  h1 {
+    color: black;
+		font-size: 64px;
+  }
+	h2{
+		font-size: 36px;
+	}
+  h1,
+  h2,
+  h3 {
+    text-align: center;
+	}
+	.container{
+		margin-top: 5rem;
+	}
+	.title{
+		padding-top:3rem;
+		margin-bottom: 3rem;
+	}
+
+.table{
+	margin: 4rem;
+	font-size: 24px;
+	h1{
+		text-align: left;
+		margin-bottom: 1rem;
+	}
+	tr:hover td{
+		background-color: #c0c0c0;
+	}
+	th{
+		background-color: black;
+	}
+	table{
+		border-radius: 10px;
+		overflow: hidden;
+	}
+	thead{
+		height:4rem;
+	}
+	tbody{
+		td{
+			height: 2rem;
+
+		}
+
+	}
+}
+
+</style>

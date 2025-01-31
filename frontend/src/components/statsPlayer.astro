@@ -1,0 +1,58 @@
+---
+const { stats } = Astro.props;
+---
+
+<table>
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Position</th>
+      <th>Puntos</th>
+      <th>Aces</th>
+      <th>Bloqueos</th>
+      <th>Ataques</th>
+      <th>ENF</th>
+      <th>CE</th>
+    </tr>
+  </thead>
+  <tbody>
+    {
+      stats?.map((s: any) => (
+        <tr>
+          <td>{s.player.name}</td>
+          <td>{s.player.position}</td>
+          <td>{s.points}</td>
+          <td>{s.aces}</td>
+          <td>{s.blocks}</td>
+          <td>{s.attacks}</td>
+          <td>{s.enf}</td>
+          <td>{s.ce}</td>
+        </tr>
+      ))
+    }
+  </tbody>
+</table>
+<style>
+  * {
+    font-weight: bold;
+    font-style: normal;
+  }
+  table {
+    margin: 0;
+
+    th {
+      background-color: black;
+      color: white;
+      padding: 10px;
+    }
+    td {
+      padding: 10px;
+    }
+    tr:nth-child(even) td {
+      background-color: #f2f2f2;
+    }
+    tr:hover td {
+      background-color: #ddd;
+    }
+  }
+</style>

@@ -3,6 +3,7 @@ const { match } = Astro.props;
 ---
 
 <tr>
+  <td>{match.tournament}</td>
   <td>{match.nameTeamA} vs {match.nameTeamB}</td>
   <td>{match.setA} - {match.setB}</td>
   <td>{match.state}</td>

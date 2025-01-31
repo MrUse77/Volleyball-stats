@@ -23,23 +23,29 @@ const matches: any[] = await fetchMatches();
       <table>
         <thead>
           <tr>
+            <th>Torneo</th>
             <th>Equipos</th>
             <th>Puntaje</th>
             <th>Estado</th>
-            <th>Estado</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
-          {matches.map((match: any) => <Partidos match={match} />)}
+          {
+            matches ? (
+              matches.map((match: any) => <Partidos match={match} />)
+            ) : (
+              <tr>
+                <td colspan="4">No hay partidos disponibles</td>
+              </tr>
+            )
+          }
         </tbody>
       </table>
     </div>
   </div>
 </Layout>
 <style>
-  .container {
-    margin-top: 6rem;
-  }
   h1 {
     text-align: center;
     margin: 1rem;
@@ -60,6 +66,9 @@ const matches: any[] = await fetchMatches();
       td {
         height: 2rem;
       }
+    }
+    tr:hover td {
+      background-color: #c0c0c0;
     }
   }
 </style>

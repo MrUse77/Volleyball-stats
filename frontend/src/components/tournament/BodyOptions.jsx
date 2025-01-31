@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Grupo } from "./Grupo"; // Asegúrate de que la ruta sea correcta
 import Partidos from "./Partidos";
 
-const BodyOptions = ({ tournament }) => {
+const BodyOptions = ({ tournament, matches }) => {
   const groups = [
     ...tournament.groups,
     {
@@ -16,10 +16,9 @@ const BodyOptions = ({ tournament }) => {
       ],
     },
   ];
-  console.log({ groups, tournament });
+
   const [options, setOptions] = useState("groups");
   const changeOption = (option) => {
-    console.log(option);
     setOptions(option);
   };
 
@@ -49,7 +48,7 @@ const BodyOptions = ({ tournament }) => {
             <p>No hay grupos</p>
           )
         ) : (
-          <Partidos showTournamentHeader={false} />
+          <Partidos showTournamentHeader={false} matches={matches} />
         )}
       </div>
     </section>

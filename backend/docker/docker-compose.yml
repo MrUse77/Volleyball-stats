@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:latest
+    container_name: volleyball_stats_db
+    environment:
+      POSTGRES_USER: MrUse
+      POSTGRES_PASSWORD: 1120712
+      POSTGRES_DB: voley-track
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

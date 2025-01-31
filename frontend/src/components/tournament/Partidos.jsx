@@ -1,4 +1,5 @@
-const Partidos = ({ showTournamentHeader }) => {
+const Partidos = ({ showTournamentHeader, matches }) => {
+  console.log(matches.matches);
   return (
     <table class="partidos">
       <thead>
@@ -11,28 +12,29 @@ const Partidos = ({ showTournamentHeader }) => {
         </tr>
       </thead>
       <tbody>
-        <tr>
-          {showTournamentHeader && <td>Torneo</td>}
-          <td>Equipo A vs Equipo B</td>
-          <td>2 - 1</td>
-          <td>En Vivo</td>
-          <td>
-            <a href="#" class="btn-secondary">
-              Ver Estadísticas
-            </a>
-          </td>
-        </tr>
-        <tr>
-          {showTournamentHeader && <td>Torneo</td>}
-          <td>Equipo C vs Equipo D</td>
-          <td>3 - 0</td>
-          <td>Finalizado</td>
-          <td>
-            <a href="#" class="btn-secondary">
-              Ver Estadísticas
-            </a>
-          </td>
-        </tr>
+        {showTournamentHeader && <td>Torneo</td>}
+        {matches ? (
+          matches.matches.map((match) => (
+            <tr>
+              <td>
+                {match.teamA} vs {match.teamB}
+              </td>
+              <td>
+                {match.setA} - {match.setB}
+              </td>
+              <td>{match.state}</td>
+              <td>
+                <a href={`/match/${match.id}`} class="btn-secondary">
+                  Ver Estadísticas
+                </a>
+              </td>
+            </tr>
+          ))
+        ) : (
+          <tr>
+            <td colSpan={showTournamentHeader ? 5 : 4}>No hay partidos</td>
+          </tr>
+        )}
       </tbody>
     </table>
   );

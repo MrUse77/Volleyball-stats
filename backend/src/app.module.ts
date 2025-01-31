@@ -14,17 +14,36 @@ import { statisticsTeam } from './modules/statistics-team/statistics-team.entity
 import { Team } from './modules/team/team.entity';
 import { Tournament } from './modules/tournament/tournament.entity';
 import { GroupsModule } from './modules/groups/groups.module';
+import { ConfigModule } from '@nestjs/config';
+import { Groups } from './modules/groups/groups.entity';
+import { Player } from './modules/player/player.entity';
+import { statisticsPlayer } from './modules/statistics-player/statistics-player.entity';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      url: process.env.DATABASE_URL,
+
+      entities: [
+        Match,
+        Groups,
+        Player,
+        statisticsPlayer,
+        statisticsTeam,
+        Team,
+        Tournament,
+      ],
+      synchronize: true,
+    }),
+
     UserModule,
     TournamentModule,
     MatchModule,
     StatisticsModule,
     TeamModule,
     PlayerModule,
-    TypeOrmModule.forRoot(typeOrmConfig),
-    TypeOrmModule.forFeature([Tournament, Match, Team, statisticsTeam]),
     StatisticsTeamModule,
     GroupsModule,
   ],

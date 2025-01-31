@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@astrojs/react": "^4.1.6",
-    "@astrojs/vercel": "^8.0.3",
+    "@astrojs/vercel": "^8.0.5",
     "@types/react-dom": "^19.0.3",
     "astro": "^5.1.8",
     "react": "^19.0.0",

@@ -7,6 +7,7 @@ import {
   getGroupDTO,
   GetGroupsTournamentDTO,
 } from './dto/groups.dto';
+import { Tournament } from '../tournament/tournament.entity';
 
 @Injectable()
 export class GroupsService {
@@ -63,7 +64,10 @@ export class GroupsService {
       where: { id },
 
       relations: [
+        'tournament',
         'teams',
+        'teams.players',
+        'teams.players.statisticsPlayer',
         'teams.statisticsTeam',
         'teams.statisticsTeam.groups',
       ],
@@ -71,8 +75,10 @@ export class GroupsService {
     if (!group) {
       throw new NotFoundException('Group not found');
     }
+    console.dir(group, { depth: null });
     const groupDTO = {
       id: group.id,
+      tournament: group.tournament.name,
       group: group.group,
       teams: group.teams.map((team) => {
         const statistics = team.statisticsTeam.find(
@@ -82,6 +88,23 @@ export class GroupsService {
         return {
           id: team.id,
           name: team.name,
+          players: team.players.map((player) => {
+            return {
+              id: player.id,
+              name: player.name,
+              position: player.position,
+              statisticsPlayer: player.statisticsPlayer.map((stat) => {
+                return {
+                  points: stat.points,
+                  aces: stat.aces,
+                  blocks: stat.blocks,
+                  attacks: stat.attacks,
+                  enf: stat.enf,
+                  ce: stat.ce,
+                };
+              }),
+            };
+          }),
           statistics: statistics
             ? {
                 id: statistics.id,

@@ -1,81 +1,170 @@
 ---
 import { API_MATCHES_GET } from "astro:env/server";
 import Layout from "../../layouts/Layout.astro";
-
+import StatsTeam from "../../components/StatsTeam.astro";
+import StatsPlayer from "../../components/statsPlayer.astro";
+interface stats {
+  aces: number;
+  blocks: number;
+  errors: number;
+  attacks: number;
+  totalPoints: number;
+}
 const { id } = Astro.params;
 const fetchStatistics = async () => {
   const response = await fetch(`${API_MATCHES_GET}/${id}`);
   return response.json();
 };
 const match = await fetchStatistics();
+console.dir(match, { depth: null });
+const [teamA, teamB] = [match.scoreA, match.scoreB];
 
+let statsTeamA: stats = {
+  aces: 0,
+  blocks: 0,
+  errors: 0,
+  attacks: 0,
+  totalPoints: 0,
+};
+let statsTeamB: stats = {
+  aces: 0,
+  blocks: 0,
+  errors: 0,
+  attacks: 0,
+  totalPoints: 0,
+};
 
-const [teamA,teamB]= [match.scoreA, match.scoreB]
-console.log(Astro.request.headers.get('accept-language'))
+match.teamA.statistics?.forEach((s: any) => {
+  statsTeamA.aces += s.aces;
+  statsTeamA.blocks += s.blocks;
+  statsTeamA.errors += s.enf;
+  statsTeamA.attacks += s.attacks;
+  statsTeamA.totalPoints += s.points;
+});
+
+match.teamB.statistics?.forEach((s: any) => {
+  statsTeamB.aces += s.aces;
+  statsTeamB.blocks += s.blocks;
+  statsTeamB.errors += s.enf;
+  statsTeamB.attacks += s.attacks;
+  statsTeamB.totalPoints += s.points;
+});
+console.log(Astro.request.headers.get("accept-language"));
 ---
 
 <Layout
   title={match ? `Partido del ${match.tournament}` : "Torneo no encontrado"}>
   <div class="body-match">
     <section class="result-section">
-			<h1 class="tournament-name">{match.tournament}</h1>
-			<p>  {new Date(match.startTime).toLocaleDateString(Astro.request.headers.get('accept-language') || "es-AR", {
-				minute: "numeric",
-				hour:"numeric",
-				day: "numeric",
-				month: "long",
-				year: "numeric",
-			})}</p>
+      <h1 class="tournament-name">{match.tournament}</h1>
+      <p>
+        {
+          new Date(match.startTime).toLocaleDateString(
+            Astro.request.headers.get("accept-language") || "es-AR",
+            {
+              minute: "numeric",
+              hour: "numeric",
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            }
+          )
+        }
+      </p>
       <div class="match">
-				<div class="team-home">
-					<h1>{match.teamA.name}</h1>
-				</div>
-				<div class="sets">
-					<h1>{match.setA}</h1>
-					<h1>:</h1>
-					<h1>{match.setB}</h1>
-				</div>
-				<div class="team-away">
-					<h1>{match.teamB.name}</h1>
-				</div>
+        <div class="team-home">
+          <h1>{match.teamA.name}</h1>
+        </div>
+        <div class="sets">
+          <h1>{match.setA}</h1>
+          <h1>:</h1>
+          <h1>{match.setB}</h1>
+        </div>
+        <div class="team-away">
+          <h1>{match.teamB.name}</h1>
+        </div>
       </div>
-			<div class="scores">
-				{
-					teamA.map((scoreA:string,index:number) => (
-						console.log(scoreA),
-						<div class="score">
-							<p>{scoreA}</p>
-						</div>
-						<p>-</p>
-						<div class="score">
-							<p>{teamB[index]}</p>
-						</div>
-					))
-				}
-			</div>
+      <div class="scores">
+        {
+          teamA.map(
+            (scoreA: string, index: number) => (
+              console.log(scoreA),
+              (
+                <div class="scoring">
+                  <span class="scoreA">{scoreA}</span>
+                  <span style="flex: 0; text-align: center;">-</span>
+                  <span class="scoreB">{teamB[index]}</span>
+                </div>
+              )
+            )
+          )
+        }
+      </div>
+    </section>
+    <section class="stats-section">
+      <h1>Estadísticas</h1>
+      <div class="teams">
+        <section class="team">
+          <div id="A">
+            <h2>{match.teamA.name}</h2>
+          </div>
+          <StatsTeam statsTeam={statsTeamA} />
+        </section>
+        <section class="team">
+          <div id="B">
+            <h2>{match.teamB.name}</h2>
+          </div>
+          <StatsTeam statsTeam={statsTeamB} />
+        </section>
+      </div>
+      <div class="stats-players">
+        <h1>Jugador Por Jugador</h1>
+        <div class="teams">
+          <section class="team">
+            <div id="A">
+              <h2>{match.teamA.name}</h2>
+            </div>
+            <StatsPlayer stats={match.teamA.statistics} />
+          </section>
+          <section class="team">
+            <div id="B">
+              <h2>{match.teamB.name}</h2>
+            </div>
+            <StatsPlayer stats={match.teamB.statistics} />
+          </section>
+        </div>
+      </div>
+      <p>Proximamente...</p>
     </section>
   </div>
 </Layout>
 <style>
-	.tournament-name{
-		font-size: 3rem;
-		margin: 0;
-	}
+  .tournament-name {
+    font-size: 3rem;
+    margin: 0;
+  }
+  h1 {
+    text-align: center;
+  }
   .body-match {
     display: flex;
     flex-direction: column;
-    background-color: rgb(123, 198, 252);
+    background-color: rgb(255, 255, 255);
     min-height: 100vh;
-		color:white;
+    color: white;
+    margin-top: 5rem;
   }
   .result-section {
-		display: flex;
-    flex-direction:column;
+    display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 1rem;
+    gap: 0.5rem;
     padding: 3rem;
-		background-image: radial-gradient(circle, #756e69, #292727);s
+    background:
+      radial-gradient(circle, rgba(69, 54, 54, 0.8), rgba(0, 0, 0, 0.8)),
+      url("https://images.unsplash.com/photo-1479859546309-cd77fa21c8f6?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")
+        no-repeat center/cover;
   }
   .sets {
     display: flex;
@@ -101,13 +190,7 @@ console.log(Astro.request.headers.get('accept-language'))
     justify-content: center;
     align-items: center;
     width: 100%;
-
-
-    h1 {
-      margin: 1rem;
-    }
     div {
-
       width: 100%;
       display: flex;
       flex-direction: row;
@@ -124,11 +207,105 @@ console.log(Astro.request.headers.get('accept-language'))
       }
     }
   }
-	.scores{
-		display: flex;
-		flex-direction: row;
-		justify-content: center;
-		align-items: center;
-		gap: 1rem;
-	}
+  .scores {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .scoring {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    height: 100%;
+    width: 10rem;
+    span {
+      font-size: 1rem;
+    }
+    .scoreA {
+      flex: 1;
+      text-align: right;
+    }
+
+    .scoreB {
+      flex: 1;
+      text-align: left;
+    }
+  }
+  .stats-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 3rem;
+    color: black;
+  }
+  .teams {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    margin: 1rem;
+    width: 100%;
+    section {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      background-color: white;
+      border-radius: 5px;
+      padding: 1rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      max-width: 1200px;
+    }
+    .team {
+      display: flex;
+      flex-direction: column;
+      justify-content: start;
+      align-items: center;
+      gap: 1rem;
+      background-color: white;
+      border-radius: 5px;
+      padding: 0 1rem 1rem 1rem;
+      width: 100%;
+      div {
+        border-bottom: 1px solid black;
+        box-shadow: 0 4px 4px rgba(0, 0, 0, 0.5);
+        margin: 0;
+        padding: 1rem;
+        width: 100%;
+        border-radius: 5px;
+        h2 {
+          font-size: 2rem;
+        }
+      }
+      #A {
+        background-color: #000000;
+        color: white;
+      }
+    }
+  }
+  .stats-players {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 3rem;
+    color: black;
+    width: 100%;
+    .team {
+      gap: 0;
+    }
+  }
+  @media (max-width: 768px) {
+    .match {
+      flex-direction: column;
+    }
+  }
 </style>

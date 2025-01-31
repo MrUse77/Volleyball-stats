@@ -13,6 +13,7 @@ import { validateHeaderName } from 'http';
 
 export class getMatchesDTO {
   id: string;
+  tournament: string;
   scoreA: number[];
   scoreB: number[];
   setA: number;

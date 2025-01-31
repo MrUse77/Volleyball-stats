@@ -46,4 +46,6 @@ export class Team {
     cascade: true,
   })
   statisticsTeam: statisticsTeam[];
+
+
 }

@@ -106,7 +106,7 @@ export class TournamentService {
     try {
       const t = await this.tournamentRepository.findOne({
         where: { id },
-        relations: ['matches'],
+        relations: ['matches', 'matches.teamA', 'matches.teamB'],
       });
       const matchesPerTournament: getTournamentMatchesDTO = {
         id: t.id,
@@ -122,6 +122,7 @@ export class TournamentService {
           state: m.state,
         })),
       };
+      console.dir({ matchesPerTournament }, { depth: null });
       return matchesPerTournament;
     } catch (e) {
       console.log(e);

@@ -77,7 +77,7 @@ export class MatchService {
       (statistic) => statistic.player?.team?.id === match.teamB.id,
     );
 
-    console.log(match);
+    console.dir(match, { depth: null });
     return {
       id: match.id,
       startTime: match.startTime,
@@ -136,7 +136,7 @@ export class MatchService {
 
   async getMatches(): Promise<getMatchesDTO[]> {
     const matches = await this.matchRepository.find({
-      relations: ['teamA', 'teamB', 'winner'],
+      relations: ['teamA', 'teamB', 'winner', 'tournament'],
     });
     if (!matches) {
       throw new NotFoundException('No se encontraron partidos');
@@ -144,6 +144,7 @@ export class MatchService {
     const matchesDTO = matches.map((match) => {
       return {
         id: match.id,
+        tournament: match.tournament.name,
         scoreA: match.scoreA,
         scoreB: match.scoreB,
         setA: match.setA,

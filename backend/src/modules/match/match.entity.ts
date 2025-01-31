@@ -17,7 +17,6 @@ import { statisticsTeam } from '../statistics-team/statistics-team.entity';
 import { Tournament } from '../tournament/tournament.entity';
 
 @Entity()
-@Check(`"teamA" <>  "teamB"`)
 export class Match {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -33,10 +32,10 @@ export class Match {
   @ManyToOne(() => Team, { nullable: false })
   teamB: Team;
 
-  @Column({ type: 'json', default: '[]' }) // Guardar puntajes como JSON
+  @Column({ type: 'int', array: true, default: '{}' }) // Guardar puntajes como JSON
   scoreA: number[];
 
-  @Column({ type: 'json', default: '[]' }) // Guardar puntajes como JSON
+  @Column({ type: 'int', array: true, default: '{}' }) // Guardar puntajes como JSON
   scoreB: number[];
 
   @Column({ type: 'int', default: 0 })
@@ -51,7 +50,7 @@ export class Match {
   @Column({ type: 'varchar', length: 100 })
   arbitrator: string;
 
-  @Column({ type: 'datetime' })
+  @Column({ type: 'timestamp' })
   startTime: Date;
 
   @Column({ type: 'varchar', length: 100, default: 'pending' })
@@ -71,10 +70,4 @@ export class Match {
     { cascade: true, eager: true },
   )
   statisticsPlayer: statisticsPlayer[];
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 }

@@ -2,14 +2,16 @@
 import Layout from "../layouts/Layout.astro";
 import Hero from "../components/Hero.astro";
 import Torneos from "../components/Torneos.astro";
-import Partidos from "../components/Partidos.astro";
+
 import { API_TOURNAMENTS_GET } from "astro:env/server";
 const t: [] = await fetch(API_TOURNAMENTS_GET)
   .then((response) => response.json())
   .catch((error) => console.error(error));
-const tournaments = t.filter(
+
+const tournaments = t?.filter(
   (tournament: any) => tournament.status === "active"
 );
+
 console.log(tournaments);
 export const prerender = true;
 ---

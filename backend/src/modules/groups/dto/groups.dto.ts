@@ -22,6 +22,7 @@ export class createGroupDTO {
 
 export class getGroupDTO {
   id: string;
+  tournament: string;
   group: string;
   teams: {
     id: string;
@@ -35,5 +36,18 @@ export class getGroupDTO {
       setsPerdidos: number;
       puntos: number;
     };
+    players: {
+      id: string;
+      name: string;
+      position: string;
+      statisticsPlayer: {
+        points: number;
+        aces: number;
+        blocks: number;
+        attacks: number;
+        enf: number;
+        ce: number;
+      }[];
+    }[];
   }[];
 }
